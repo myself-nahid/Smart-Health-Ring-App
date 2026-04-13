@@ -1,12 +1,14 @@
 from fastapi import APIRouter
-from app.models.requests import DashboardDataRequest # Re-use this request model
+from app.models.requests import DashboardDataRequest, MetricHistoryRequest # Re-use this request model
 from app.models.responses import (
+    MetricHistoryResponse,
     SleepDetailResponse,
     HealthDetailResponse,
     PhysicalActivityDetailResponse
 )
 from app.services.openai_client import generate_json_response
 from app.prompts.detail_prompts import (
+    get_metric_history_prompt,
     get_sleep_detail_prompt,
     get_health_detail_prompt,
     get_physical_activity_detail_prompt
@@ -54,3 +56,19 @@ async def get_physical_activity_details(payload: DashboardDataRequest):
     user_context = format_data_for_prompt(payload)
     result_dict = await generate_json_response(system_prompt, user_context)
     return PhysicalActivityDetailResponse(**result_dict)
+
+@router.post("/metric-history", response_model=MetricHistoryResponse)
+async def get_metric_history(payload: MetricHistoryRequest):
+    # The 'format_data_for_prompt' helper is not strictly needed here, 
+    # as the AI is generating synthetic historical data, but you could include it
+    # if you want the synthesis to be based on the user's recent averages.
+    user_context = f"""
+    User Profile: {payload.user_profile.model_dump_json()}
+    Selected Date: {payload.selected_date_str}
+    """
+    
+    system_prompt = get_metric_history_prompt(payload.user_profile.language, payload.metric)
+    
+    result_dict = await generate_json_response(system_prompt, user_context)
+
+    return MetricHistoryResponse(**result_dict)

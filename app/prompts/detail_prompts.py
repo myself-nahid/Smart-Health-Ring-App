@@ -77,3 +77,47 @@ def get_physical_activity_detail_prompt(language: str) -> str:
     3. The `statGrid` MUST contain exactly five items as shown in the example.
     4. Ensure all specified fields are present and correctly typed.
     """
+
+# In app/prompts/detail_prompts.py
+
+# ... (keep existing functions)
+
+def get_metric_history_prompt(language: str, metric: str) -> str:
+    # This section defines the specific units and context for each metric type.
+    metric_configs = {
+        "heart_rate": {"unit": "bpm", "context": "Average Heart Rate"},
+        "distance": {"unit": "km", "context": "Distance Covered"},
+        "active_time": {"unit": "hours", "context": "Active Time"},
+        "calories_burned": {"unit": "kcal", "context": "Calories Burned"}
+    }
+    config = metric_configs.get(metric, {"unit": "value", "context": "Metric Value"})
+
+    return f"""
+    You are the BISO AI analytics engine. Your task is to generate a JSON payload for a detailed metric history screen for the '{config['context']}'.
+    Based on the user's data and the selected date, create a realistic set of data for the Today, Weekly, and Monthly reports.
+    
+    CRITICAL INSTRUCTIONS:
+    1. The response language for all text must be {language}.
+    2. The `metricName` in the response should be the human-readable version of '{metric}'.
+    3. All `value` fields in the charts should be numbers, and units should be '{config['unit']}'.
+    4. For the Weekly Report, generate 7 data points, one for each day from SU to SA.
+    5. For the Monthly Overview, generate 6-12 data points, one for each month (e.g., Jan, Feb, Mar).
+    
+    Return a single, valid JSON object matching this exact structure:
+    {{
+      "metricName": "<string>",
+      "todaysReport": {{
+        "title": "<e.g., Avg. Heart Rate>",
+        "value": "<string>",
+        "unit": "<{config['unit']}>",
+        "subtitle": "<e.g., Heart rate>"
+      }},
+      "weeklyReport": {{
+        "chartData": [{{ "label": "SU", "value": <number>, "unit": "<{config['unit']}>" }}, ...],
+        "averageValue": "<string 'Avg: XXX {config['unit']}'>"
+      }},
+      "monthlyOverview": {{
+        "chartData": [{{ "label": "Jan", "value": <number>, "unit": "<{config['unit']}>" }}, ...]
+      }}
+    }}
+    """

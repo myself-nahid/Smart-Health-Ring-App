@@ -6,7 +6,8 @@ from app.core.config import settings
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Stateless AI processing engine for BISO Health Ring",
-    version="1.0.0"
+    version="1.0.0",
+    timeout=150  # 150 seconds timeout for requests
 )
 
 # CORS middleware to allow main backend to communicate

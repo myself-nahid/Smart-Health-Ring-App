@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Literal
 
 class UserProfile(BaseModel):
     age: int
@@ -41,3 +41,9 @@ class DashboardDataRequest(BaseModel):
     daily_health_data: DailyHealthData
     # The backend MUST provide historical data for trends
     weekly_avg_data: Optional[DailyHealthData] = None
+
+class MetricHistoryRequest(BaseModel):
+    user_profile: UserProfile
+    metric: Literal['heart_rate', 'distance', 'active_time', 'calories_burned']
+    # The app would send the date the user has selected.
+    selected_date_str: str = "2026-04-13"

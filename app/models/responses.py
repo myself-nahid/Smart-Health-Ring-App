@@ -117,3 +117,22 @@ class PhysicalActivityDetailResponse(BaseModel):
     progressInsight: InsightCard
     durationOfActivity: List[ActivityDurationItem]
     weeklyAverage: str
+
+class TodaysReportCard(BaseModel):
+    title: str
+    value: str
+    unit: str
+    subtitle: str
+
+class WeeklyReportCard(BaseModel):
+    chartData: List[ChartDataPoint]
+    averageValue: str
+
+class MonthlyOverviewCard(BaseModel):
+    chartData: List[ChartDataPoint]
+
+class MetricHistoryResponse(BaseModel):
+    metricName: str
+    todaysReport: TodaysReportCard
+    weeklyReport: WeeklyReportCard
+    monthlyOverview: MonthlyOverviewCard
