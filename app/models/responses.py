@@ -136,3 +136,14 @@ class MetricHistoryResponse(BaseModel):
     todaysReport: TodaysReportCard
     weeklyReport: WeeklyReportCard
     monthlyOverview: MonthlyOverviewCard
+
+# A representation of a single track, which the AI will return
+class RecommendedTrack(BaseModel):
+    id: str
+    title: str
+    category: Literal['sleep', 'focus', 'relaxation']
+
+# The final response from the recommendation endpoint
+class SoundTherapyRecommendationResponse(BaseModel):
+    recommendationReason: str
+    recommendedTracks: List[RecommendedTrack]
