@@ -147,3 +147,16 @@ class RecommendedTrack(BaseModel):
 class SoundTherapyRecommendationResponse(BaseModel):
     recommendationReason: str
     recommendedTracks: List[RecommendedTrack]
+
+class HeaderCard(BaseModel):
+    title: str
+    currentValue: str
+    unit: str
+    statusText: str
+    progressPercent: int
+
+class GenericMetricDetailResponse(BaseModel):
+    headerCard: HeaderCard
+    insights: List[InsightCard]
+    weeklyChart: List[ChartDataPoint]
+    recommendations: List[RecommendationChecklistItem]

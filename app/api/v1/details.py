@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from app.models.requests import DashboardDataRequest, MetricHistoryRequest # Re-use this request model
+from app.models.requests import DashboardDataRequest, GenericMetricRequest, MetricHistoryRequest # Re-use this request model
 from app.models.responses import (
+    GenericMetricDetailResponse,
     MetricHistoryResponse,
     SleepDetailResponse,
     HealthDetailResponse,
@@ -8,6 +9,7 @@ from app.models.responses import (
 )
 from app.services.openai_client import generate_json_response
 from app.prompts.detail_prompts import (
+    get_generic_metric_prompt,
     get_metric_history_prompt,
     get_sleep_detail_prompt,
     get_health_detail_prompt,
@@ -72,3 +74,18 @@ async def get_metric_history(payload: MetricHistoryRequest):
     result_dict = await generate_json_response(system_prompt, user_context)
 
     return MetricHistoryResponse(**result_dict)
+
+@router.post("/generic-metric", response_model=GenericMetricDetailResponse)
+async def get_generic_metric_details(payload: GenericMetricRequest):
+    # This endpoint generates realistic estimations for metrics
+    # No actual health data needed - just user profile for personalization
+    user_context = f"User Profile: {payload.user_profile.model_dump_json()}"
+    
+    system_prompt = get_generic_metric_prompt(
+        language=payload.user_profile.language,
+        metric=payload.metric
+    )
+    
+    result_dict = await generate_json_response(system_prompt, user_context)
+
+    return GenericMetricDetailResponse(**result_dict)

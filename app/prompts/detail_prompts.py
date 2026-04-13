@@ -121,3 +121,38 @@ def get_metric_history_prompt(language: str, metric: str) -> str:
       }}
     }}
     """
+
+def get_generic_metric_prompt(language: str, metric: str) -> str:
+    # This configuration dictionary makes the prompt dynamic and intelligent
+    METRIC_CONFIGS = {
+        'heart_rate': {"name": "Heart Rate", "unit": "bpm", "range": "60-100 bpm for adults at rest."},
+        'hrv': {"name": "HRV", "unit": "ms", "range": "20-150 ms, but varies greatly by individual."},
+        'spo2': {"name": "SpO2", "unit": "%", "range": "95-100% is considered normal."},
+        'stress_level': {"name": "Stress Level", "unit": "/100", "range": "A score below 40 indicates low stress."},
+        'recovery': {"name": "Recovery", "unit": "/100", "range": "A score above 70 indicates good recovery."},
+        'sleep_duration': {"name": "Sleep Duration", "unit": "hours", "range": "7-9 hours per night is recommended."},
+        'menstrual_cycle': {"name": "Menstrual Cycle", "unit": "", "range": "Typically 21-35 days, with a follicular and luteal phase."},
+        # Add configs for all other metrics...
+    }
+    
+    config = METRIC_CONFIGS.get(metric, {"name": metric.replace('_', ' ').title(), "unit": "", "range": "Normal ranges vary."})
+
+    return f"""
+    You are the BISO AI analytics engine. Your task is to generate a detailed JSON payload for the '{config['name']}' screen.
+    Based on the user's data, create realistic estimations for a header card, insights, a weekly chart, and recommendations.
+    
+    CRITICAL INSTRUCTIONS:
+    1. The response language for all text must be {language}.
+    2. The 'headerCard.title' must be '{config['name']}'.
+    3. The primary 'insight' MUST be about the 'Normal Range' and should use this information: '{config['range']}'.
+    4. The 'weeklyChart' must show 7 days of data for '{config['name']}' with the unit '{config['unit']}'.
+    5. The 'recommendations' must be three general, actionable health tips that are broadly beneficial.
+    
+    Return a single, valid JSON object matching this exact structure:
+    {{
+      "headerCard": {{ "title": "<string>", "currentValue": "<string>", "unit": "<{config['unit']}>", "statusText": "<string>", "progressPercent": <integer> }},
+      "insights": [{{ "iconIdentifier": "info_icon", "title": "Normal Range", "description": "<string>" }}],
+      "weeklyChart": [{{ "label": "Mon", "value": <number>, "unit": "<{config['unit']}>" }}, ...],
+      "recommendations": [{{ "text": "Maintain regular physical activity", "isChecked": true }}, ...]
+    }}
+    """

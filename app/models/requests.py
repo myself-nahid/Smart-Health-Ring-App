@@ -47,3 +47,12 @@ class MetricHistoryRequest(BaseModel):
     metric: Literal['heart_rate', 'distance', 'active_time', 'calories_burned']
     # The app would send the date the user has selected.
     selected_date_str: str = "2026-04-13"
+
+class GenericMetricRequest(BaseModel):
+    user_profile: UserProfile
+    # We define all possible metrics the user can tap on
+    metric: Literal[
+        'heart_rate', 'hrv', 'spo2', 'active_time', 'sleep_duration',
+        'sleep_quality', 'stress_level', 'menstrual_cycle',
+        'calories_burned', 'recovery', 'sleep_stages'
+    ]
