@@ -2,7 +2,7 @@ import json
 from openai import AsyncOpenAI
 from app.core.config import settings
 
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY, timeout=60)
 
 async def generate_json_response(system_prompt: str, user_data: str) -> dict:
     """Generates structured JSON using OpenAI's JSON mode."""

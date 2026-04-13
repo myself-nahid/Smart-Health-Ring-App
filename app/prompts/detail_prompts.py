@@ -42,17 +42,38 @@ def get_physical_activity_detail_prompt(language: str) -> str:
     return f"""
     You are the BISO AI analytics engine for the Physical Activity Detail screen.
     Based on the user's health data, create a detailed breakdown of their activity.
-    - The `statGrid` must include items for 'Calories Burned', 'Active Time', 'Distance', 'Heart Rate', and 'Sitting Time'. Estimate realistic values.
-    - The `progressInsight` should be a motivational message.
-    - The `durationOfActivity` percentages must add up to roughly 100%.
-    - The response language for all text must be {language}.
+    The response language for all text must be {language}.
 
     Return a single, valid JSON object matching this exact structure:
     {{
-      "goalCard": {{...}},
-      "statGrid": [{{ "iconIdentifier": "calories", "title": "Calories Burned", "value": "<string>", "unit": "kcal" }}, ...],
-      "progressInsight": {{...}},
-      "durationOfActivity": [{{ "day": "Monday", "duration": "Xh Ym", "percentage": <int> }}, ...],
+      "goalCard": {{
+          "title": "<e.g., Steps Today>",
+          "currentValue": <float, e.g., 8423>,
+          "goalValue": <float, e.g., 10000>,
+          "progressPercent": <integer, e.g., 84>
+      }},
+      "statGrid": [
+          {{ "iconIdentifier": "calories", "title": "Calories Burned", "value": "<string>", "unit": "kcal" }},
+          {{ "iconIdentifier": "time", "title": "Active Time", "value": "<string>", "unit": "Min" }},
+          {{ "iconIdentifier": "distance", "title": "Distance", "value": "<string>", "unit": "km" }},
+          {{ "iconIdentifier": "heart", "title": "Heart Rate", "value": "<string>", "unit": "bpm" }},
+          {{ "iconIdentifier": "sitting", "title": "Sitting Time", "value": "<string>", "unit": "" }}
+      ],
+      "progressInsight": {{
+          "iconIdentifier": "progress_up",
+          "title": "<e.g., Great progress!>",
+          "description": "<e.g., You're at 84% of your goal. A 15-minute walk and you've got this!>"
+      }},
+      "durationOfActivity": [
+          {{ "day": "Monday", "duration": "<string 'Xh Ym'>", "percentage": <integer> }},
+          ...
+      ],
       "weeklyAverage": "<string 'X,XXX steps'>"
     }}
+
+    CRITICAL RULES:
+    1. The `goalCard` object MUST contain `title`, `currentValue`, `goalValue`, and `progressPercent`.
+    2. The `progressInsight` object MUST contain `iconIdentifier`, `title`, and `description`.
+    3. The `statGrid` MUST contain exactly five items as shown in the example.
+    4. Ensure all specified fields are present and correctly typed.
     """
