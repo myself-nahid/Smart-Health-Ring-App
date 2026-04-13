@@ -35,3 +35,9 @@ class ChatRequest(BaseModel):
 class PredictionRequest(BaseModel):
     user_profile: UserProfile
     weekly_health_data: List[DailyHealthData]
+
+class DashboardDataRequest(BaseModel):
+    user_profile: UserProfile
+    daily_health_data: DailyHealthData
+    # The backend MUST provide historical data for trends
+    weekly_avg_data: Optional[DailyHealthData] = None

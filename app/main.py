@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1 import chat, insights, prediction
+from app.api.v1 import chat, insights, prediction, dashboard
 from app.core.config import settings
 
 app = FastAPI(
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["AI Doctor Simbi"])
 app.include_router(insights.router, prefix="/api/v1/insights", tags=["Health Insights"])
 app.include_router(prediction.router, prefix="/api/v1/prediction", tags=["Risk Prediction"])
+app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["Dashboard Generation"])
 
 @app.get("/health", tags=["System"])
 def health_check():
