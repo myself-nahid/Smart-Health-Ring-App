@@ -52,7 +52,7 @@ class DashboardResponse(BaseModel):
 class ChartDataPoint(BaseModel):
     label: str  # e.g., "M", "Jan", "Awake"
     value: float
-    unit: str
+    unit: str = ""
     isHighlighted: Optional[bool] = False
 
 class InsightCard(BaseModel):
@@ -160,3 +160,35 @@ class GenericMetricDetailResponse(BaseModel):
     insights: List[InsightCard]
     weeklyChart: List[ChartDataPoint]
     recommendations: List[RecommendationChecklistItem]
+
+# --- Sub-indicator on a detail screen (e.g., "Heart Fitness" card) ---
+class SubIndicatorCard(BaseModel):
+    title: str
+    status: str            # e.g., "Good shape"
+    description: str       # e.g., "Your heart adapts well to rest"
+    metric_label: str      # e.g., "Based on your heart rate"
+    value_display: str     # e.g., "45 ms"
+    color_theme: str       # "green", "red", "orange", "blue"
+
+# --- Detail Screen Response ---
+class HealthIndicatorDetailResponse(BaseModel):
+    category_name: str
+    overall_score: int
+    header_status: str     # e.g., "Doing well today"
+    header_description: str 
+    info_box_text: str     # "What this means" content
+    sub_indicators: List[SubIndicatorCard]
+    charts: List[WeeklyReportCard] # Re-using the chart model from previous files
+    ai_advice: str         # The "What you can do" section at the bottom
+
+# --- Main Indicators Grid (10 categories) ---
+class IndicatorGridItem(BaseModel):
+    id: str
+    title: str
+    status_text: str       # e.g., "Recovering"
+    score: int
+    button_text: str       # e.g., "Breathing reset"
+
+class HealthIndicatorsSummaryResponse(BaseModel):
+    health_score: int
+    grid_items: List[IndicatorGridItem]
