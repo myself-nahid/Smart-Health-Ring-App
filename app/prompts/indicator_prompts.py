@@ -42,3 +42,36 @@ def get_indicator_detail_prompt(category: str, language: str) -> str:
     2. Respond in {language}.
     3. The 'charts' array should contain 1 or 2 chart objects depending on the category needs.
     """
+
+def get_sub_indicator_deep_dive_prompt(sub_indicator_name: str, language: str) -> str:
+    return f"""
+    You are the Medical Logic Explainer for BISO. 
+    A user clicked on '{sub_indicator_name}' to see where this data comes from.
+    
+    Instructions:
+    1. Provide 2-3 component cards that explain the physiological signals used.
+    2. Logic Examples:
+       - 'Water Level': Use 'HR/HRV Dehydration Patterns' and 'Water Intake Logs'.
+       - 'Blood Flow': Use 'Resting heart rate', 'HRV', and 'SpO2'.
+       - 'Resilience': Use 'HRV Trends' and 'Recovery capacity'.
+    
+    Return a valid JSON matching this structure:
+    {{
+      "title": "{sub_indicator_name}",
+      "description_title": "Where does {sub_indicator_name} come from",
+      "description_text": "Detailed check of your {sub_indicator_name}.",
+      "components": [
+         {{
+           "icon_identifier": "heart",
+           "title": "Signal Name",
+           "status_label": "No pressure",
+           "status_description": "Empathic explanation of signal",
+           "metric_footer_label": "Based on heart rate",
+           "value_display": "Normal",
+           "color_theme": "red"
+         }}
+      ]
+    }}
+
+    Language: {language}. Tonal context: Professional and reassuring.
+    """

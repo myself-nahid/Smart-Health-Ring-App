@@ -192,3 +192,18 @@ class IndicatorGridItem(BaseModel):
 class HealthIndicatorsSummaryResponse(BaseModel):
     health_score: int
     grid_items: List[IndicatorGridItem]
+
+class ComponentCard(BaseModel):
+    icon_identifier: str    # e.g., "heart", "drop", "steps"
+    title: str              # e.g., "HR / HRV Dehydration Patterns"
+    status_label: str       # e.g., "No pressure" or "Good"
+    status_description: str # e.g., "Your heart is not under pressure now."
+    metric_footer_label: str # e.g., "Based on your heart rate"
+    value_display: str      # e.g., "Normal" or "48 ms"
+    color_theme: str        # "red", "blue", "green", "orange"
+
+class SubIndicatorDetailResponse(BaseModel):
+    title: str              # e.g., "Water Level"
+    description_title: str  # e.g., "Where does water level come from"
+    description_text: str   # e.g., "Checks your water level."
+    components: List[ComponentCard]
