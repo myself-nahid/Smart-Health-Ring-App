@@ -54,3 +54,19 @@ async def generate_chat_response(messages: list) -> str:
         except APIError as e:
             print(f"OpenAI API Error: {e}")
             raise
+
+async def stream_simbi_response(messages: list):
+    """
+    Calls OpenAI with streaming enabled. 
+    Yields chunks of text as they arrive.
+    """
+    response = await client.chat.completions.create(
+        model=settings.MODEL_NAME,
+        messages=messages,
+        stream=True,  # This is the key for WebSockets
+        temperature=0.7
+    )
+
+    async for chunk in response:
+        if chunk.choices[0].delta.content:
+            yield chunk.choices[0].delta.content
