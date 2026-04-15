@@ -7,6 +7,10 @@ client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY, timeout=120)
 
 async def generate_json_response(system_prompt: str, user_data: str) -> dict:
     """Generates structured JSON using OpenAI's JSON mode."""
+    # Ensure the word 'json' appears in the system prompt for JSON mode compliance
+    if 'json' not in system_prompt.lower():
+        system_prompt = f"{system_prompt}\n\nRespond with valid JSON only."
+    
     max_retries = 3
     for attempt in range(max_retries):
         try:

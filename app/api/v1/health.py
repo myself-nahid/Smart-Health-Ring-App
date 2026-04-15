@@ -9,7 +9,21 @@ router = APIRouter()
 @router.post("/summary", response_model=HealthIndicatorsSummaryResponse)
 async def get_health_summary(payload: DashboardDataRequest):
     # This prompt asks AI to give a high-level status for all 10 categories at once
-    system_prompt = f"Generate a high-level health summary grid for 10 categories in {payload.user_profile.language}."
+    system_prompt = f"""Generate a health summary with overall health score and grid items. 
+    Respond with JSON in {payload.user_profile.language} with this exact structure:
+    {{
+        "health_score": (int 0-100),
+        "grid_items": [
+            {{
+                "id": "category_identifier",
+                "title": "Category Name",
+                "status_text": "Current Status",
+                "score": (int 0-100),
+                "button_text": "Action or Button Label"
+            }}
+        ]
+    }}
+    Create 10 indicator grid items based on the user's health data."""
     user_data = payload.daily_health_data.model_dump_json()
     
     result = await generate_json_response(system_prompt, user_data)
