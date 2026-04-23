@@ -32,8 +32,9 @@ class CallToAction(BaseModel):
     actionIdentifier: str # A machine-readable ID for the app
 
 class DashboardCard(BaseModel):
-    statusLabel: str
-    insightDetail: str
+    metricLabel: str           # e.g., "Stress Level", "Heart Rate", "Sleep Quality", "Activity Level"
+    statusLabel: str           # e.g., "High but stable", "Elevated", "Good", "Low"
+    insightDetail: str         # One-sentence explanation
     trend: Trend
     callToAction: CallToAction
 
